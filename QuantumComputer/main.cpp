@@ -49,15 +49,15 @@ string dec_to_bin(int dec)
 
 int main()
 {
+    //A seed do computador é gerada pelo dia, um offset arbitrário e inicializada
     std::time_t t = std::time(nullptr);
     std::tm* now = std::localtime(&t);
     const int dia = now->tm_mday;
     const int mes = now->tm_mon + 1;
-
     const int seedOffset = 2;
+    int seed = (dia * mes) + seedOffset; //Seed para inicializar o computador
+
     int circuitSize = 0;
-    int seed = (dia * mes) + seedOffset;
-    const int steps = 10;
 
     std::vector<std::string> screen;
         std::string measures = "";
@@ -69,16 +69,24 @@ int main()
         std::string input;
 
         char gate = '\0';
+        //Apesar de nomes descritivos esses dois vão gerenciar todos os argumentos dos inputs
         int control = -1, target = -1;
 
         //the bug zone
-
+        //Usei isso para carregar inicializações durante fase de testes
         //the bug zone
 
         QuantumComputer qc(seed);
 
         cout<<"\033c";
         printCircuitBox(screen, measures);
+
+        /*
+         O flow de funcionamento é bem simples
+         Started determina se o computador está ligado ou não, e determina quais comandos estão disponíveis
+         stop determina se o programa deve continuar rodando
+         comandos como poweroff irão desligar o computador mas não parar o programa
+         */
         while(!stop)
         {
             cout<<endl<<"> ";
@@ -102,11 +110,12 @@ int main()
             }
             else
             {
+                //Em teoria é possível paralelizar esses ifs, mas não creio que o ganho valha a pena
                 //Aqui processar os inputs
                 if( parseAdd (input, gate, control))
                 {
 
-                    switch(gate)
+                    switch(gate) //Um código assim é O(1), então apesar de feio é rápido
                     {
                     case 'I':
                         qc.id(control);

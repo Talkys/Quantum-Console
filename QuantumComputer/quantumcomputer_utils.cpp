@@ -1,23 +1,5 @@
 #include "quantumcomputer.h"
 
-std::vector<std::string> QuantumComputer::amplitudes_to_string()
-{
-    std::vector<std::string> amplitudes;
-
-    auto amplitudes_size = this->amplitudes.size();
-    for(long int i = 0; i < amplitudes_size; i++)
-    {
-        double real = this->amplitudes[i].real();
-        double imag = this->amplitudes[i].imag();
-
-        std::ostringstream oss;
-        oss << real << " + " << imag << "i";
-
-        amplitudes.push_back(oss.str());
-    }
-    return amplitudes;
-}
-
 int QuantumComputer::measureQreg() {
     // Calcula a soma dos quadrados dos módulos das amplitudes
     double somaQuadrados = 0.0;
@@ -39,7 +21,7 @@ int QuantumComputer::measureQreg() {
         double moduloQuadrado = std::norm(amplitudes[i]);
         acumulado += moduloQuadrado;
         if (numeroAleatorio <= acumulado) {
-            this->boot(this->qubitRegNum, this->rngSeed);
+            this->boot(this->qubitRegNum);
             this->amplitudes[0] = 0;
             this->amplitudes[i] = 1;
             return i; // Retorna o índice da amplitude medida

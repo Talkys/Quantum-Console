@@ -1,0 +1,21 @@
+[CMake]
+Build Directory Count=1
+Current Build Directory Index-Sistema hospedeiro=0
+
+[CMake][CMake Build Directory 0]
+Build Directory Path=/home/tallys/Documentos/Git/Quantum-Console/QuantumComputer/build
+Build Type=Release
+CMake Binary=/app/bin/cmake
+CMake Executable=/app/bin/cmake
+Environment Profile=
+Extra Arguments=
+Install Directory=
+Runtime=Sistema hospedeiro
+
+[Cppcheck]
+checkPerformance=true
+checkStyle=true
+checkUnusedFunction=true
+
+[Project]
+VersionControlSupport=kdevgit

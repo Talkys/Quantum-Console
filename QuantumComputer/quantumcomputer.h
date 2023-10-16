@@ -15,14 +15,22 @@ using Matrix = std::vector<std::vector<T>>;
 class QuantumComputer
 {
 private:
-    std::vector<std::string>          qasm;
+    //Número de qubits no circuito
     unsigned int                      qubitRegNum;
-    unsigned int                      classicRegNum;
+
+    //Mapa que rastreia o entrelaçamento de qubits
     std::map<int, int>                twoBitsEntanglements;
+
+    //Vetor de amplitudes, representado como um vetor de números complexos
+
+    //Cada qubit é representado por uma combinação linear de dois
+    //números complexos
     std::vector<std::complex<double>> amplitudes;
-    std::vector<int>                  measures;
+
+    //Seed para o rng global. Estando aqui ela pode ser setada ao construir o objeto
     int                               rngSeed;
 
+    //Função genérica para multiplicar matrizes de números complexos
     Matrix<std::complex<double>> multiply(
         const Matrix<std::complex<double>>& A,
         const Matrix<std::complex<double>>& B
@@ -31,31 +39,53 @@ private:
 public:
     QuantumComputer(int);
 
-    void boot(unsigned int, unsigned int = -1);
+    /*
+     Inicializa o computador com N qubits
+     Recebe: Número de qubits, número de bits para o registrador regular
+     */
+    void boot(unsigned int);
 
+
+    /*
+     Agrupa qubits usando um qubit de alvo
+     */
     Matrix<std::pair<int, std::complex<double>>>
     getSingleQubitPairs(unsigned int);
 
+    /*
+     Agrupa qubits usando dois qubits de alvo
+     */
     Matrix<std::pair<int, std::complex<double>>>
     getTwoQubitsPairs(int, int);
 
+    /*Calcula a probabilidade de estados de um único qubit*/
     std::vector<double> getQubitProbability(int offset);
 
+    /*Calcula a probabilidade de um conjunto de qubits*/
     double getQubitsProbability(
         const std::vector<int>& offsets,
         const std::vector<int>& targets
     );
 
+    /*Aplica uma matriz unitária em um qubit*/
     void applySingleBitMatrix(
         int offset,
         const Matrix<std::complex<double>>& matrix
     );
 
+    /*Aplica uma matriz dupla em dois qubits
+     Aqui é usada somente para a porta cnot*/
     void applyTwoBitsMatrix(
         int control,
         int target,
         const Matrix<std::complex<double>>& matrix
     );
+
+    /*
+     Aqui tem uma coleção de portas que estão implementadas no simulador
+     Cada uma tem sua especificação detalhada em um documento separado
+     */
+
 
     void id(int offset);
 
@@ -77,10 +107,10 @@ public:
 
     void cnot(int control, int target);
 
-    std::vector<std::string> amplitudes_to_string();
-
+    /*Mede o registrador colapsando qubits*/
     int measureQreg();
 
+    /*Mede o registrador sem colapsar qubits*/
     int fakemeasure(int);
 };
 

@@ -6,6 +6,11 @@
 #include <string>
 #include <regex>
 
+/*
+ Todos os parsers aqui são iguais
+ Se der match, os devidos argumentos serão colocados em suas variáveis.
+ */
+
 bool parseAdd(const std::string& input, char& letter, int& control)
 {
     std::regex command("add ([IXYZTSHst]) (\\d+)");
