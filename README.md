@@ -25,7 +25,7 @@ Add a gate to the n qubit in the register. You can use -t to set the target for 
 
 #### gates
 
-The gates implemented are:
+The implemented gates are:
 
 > I X Y Z T S H + (cnot) s (sdg) t (tdg)
 
