@@ -11,7 +11,7 @@ using namespace std;
 
 const std::string bar      = "+==============================================================================+";
 const std::string subar    = "|                                                                              |";
-const std::string titlebar = "Quantum Simulator V 2.0 by Tallys Assis";
+const std::string titlebar = "Quantum Simulator V 2.0.1-R1 by Tallys Assis";
 
 void printCircuitBox(std::vector<std::string> circuit, string measures)
 {
