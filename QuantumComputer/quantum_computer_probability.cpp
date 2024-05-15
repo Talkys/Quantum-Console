@@ -1,11 +1,11 @@
 
-#include "quantumcomputer.h"
+#include "quantum_computer.h"
 
 double QuantumComputer::getQubitsProbability
-(
-    const std::vector<int>& offsets,
-    const std::vector<int>& targets
-) {
+    (
+        const std::vector<int>& offsets,
+        const std::vector<int>& targets
+        ) {
     double probability = 0.0;
 
     int amplitudes_size = this->amplitudes.size();

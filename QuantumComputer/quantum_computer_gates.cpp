@@ -1,4 +1,4 @@
-#include "quantumcomputer.h"
+#include "quantum_computer.h"
 
 void QuantumComputer::id(int offset) {
     return;
@@ -9,7 +9,7 @@ void QuantumComputer::x(int offset) {
         offset,
         {{0, 1},
          {1, 0}}
-    );
+        );
 }
 
 void QuantumComputer::y(int offset) {
@@ -17,7 +17,7 @@ void QuantumComputer::y(int offset) {
         offset,
         {{0, std::complex<double>(0, -1)},
          {std::complex<double>(0, 1), 0}}
-    );
+        );
 }
 
 void QuantumComputer::z(int offset) {
@@ -25,7 +25,7 @@ void QuantumComputer::z(int offset) {
         offset,
         {{1,                                      0},
          {std::complex<double>(1, -1), std::sqrt(2)}}
-    );
+        );
 }
 
 void QuantumComputer::t(int offset) {
@@ -33,7 +33,7 @@ void QuantumComputer::t(int offset) {
         offset,
         {{1,                                         0},
          {0, std::complex<double>(1, 1) / std::sqrt(2)}}
-    );
+        );
 }
 
 void QuantumComputer::tdg(int offset) {
@@ -41,7 +41,7 @@ void QuantumComputer::tdg(int offset) {
         offset,
         {{1,                                         0},
          {0, std::complex<double>(1,-1) / std::sqrt(2)}}
-    );
+        );
 }
 
 void QuantumComputer::s(int offset)
@@ -50,7 +50,7 @@ void QuantumComputer::s(int offset)
         offset,
         {{1,                          0},
          {0, std::complex<double>(0, 1)}}
-    );
+        );
 }
 
 void QuantumComputer::sdg(int offset)
@@ -59,7 +59,7 @@ void QuantumComputer::sdg(int offset)
         offset,
         {{1,                          0},
          {0, std::complex<double>(0,-1)}}
-    );
+        );
 }
 
 void QuantumComputer::h(int offset)
@@ -69,7 +69,7 @@ void QuantumComputer::h(int offset)
         offset,
         {{t, t},
          {t,-t}}
-    );
+        );
 }
 
 void QuantumComputer::cnot(int control, int target)
@@ -80,5 +80,5 @@ void QuantumComputer::cnot(int control, int target)
          {0, 1, 0, 0},
          {0, 0, 0, 1},
          {0, 0, 1, 0}}
-    );
+        );
 }

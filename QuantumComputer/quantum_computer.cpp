@@ -1,4 +1,4 @@
-#include "quantumcomputer.h"
+#include "quantum_computer.h"
 
 QuantumComputer::QuantumComputer(int seed)
 {
@@ -6,8 +6,8 @@ QuantumComputer::QuantumComputer(int seed)
 }
 
 void QuantumComputer::boot(
-        unsigned int qubitRegNum
-) {
+    unsigned int qubitRegNum
+    ) {
 
     this->qubitRegNum   = qubitRegNum;
     //this->classicRegNum = classicRegNum;

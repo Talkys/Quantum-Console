@@ -1,201 +1,78 @@
 #include <iostream>
-#include <ctime>
-#include <string>
-#include <vector>
-#include <random>
-#include "quantumcomputer.h"
-#include "UI.h"
-#include "parser.h"
+#include "quantum_computer.h"
+#include <fstream>
+#include <chrono>
+#include <omp.h>
 
 using namespace std;
 
-const std::string bar      = "+==============================================================================+";
-const std::string subar    = "|                                                                              |";
-const std::string titlebar = "Quantum Simulator V 2.0.1-R1 by Tallys Assis";
-
-void printCircuitBox(std::vector<std::string> circuit, string measures)
-{
-    cout<<titlebar<<endl;
-    cout<<bar<<endl<<subar<<endl;
-    for(int i = 0; i < circuit.size(); i++)
-    {
-        std::string line = "| " + circuit[i];
-        line.append(79 - line.length(), ' ');
-        line += '|';
-        cout<<line<<endl;
-    }
-    cout<<subar<<endl<<bar<<endl<<endl;
-
-    cout<<"Measures: ";
-    cout<<measures;
-    cout<<endl;
-}
-
-string dec_to_bin(int dec)
-{
-    string bin = "";
-    while(dec > 0)
-    {
-        if(dec % 2 == 0)
-            bin = "0" + bin;
-        else
-            bin = "1" + bin;
-
-        dec = dec >> 1;
-    }
-
-    return bin;
-}
-
 int main()
 {
-    //A seed do computador é gerada pelo dia, um offset arbitrário e inicializada
-    std::time_t t = std::time(nullptr);
-    std::tm* now = std::localtime(&t);
-    const int dia = now->tm_mday;
-    const int mes = now->tm_mon + 1;
-    const int seedOffset = 2;
-    int seed = (dia * mes) + seedOffset; //Seed para inicializar o computador
+    //Benchmarck parameters
+    int iterations   = 10000;
+    int seed         = 18032024;
+    bool paralelize  = true;
+    int max_threads  = 8;
 
-    int circuitSize = 0;
+    //Output
+    ofstream outFile("log.txt");
 
-    std::vector<std::string> screen;
-        std::string measures = "";
+    //Validações pré testes
+    if(!outFile)
+    {
+        cerr<<"Error: Unable to open output file!";
+        return 1;
+    }
+    if(!paralelize) max_threads = 1;
 
-        Circuit* c = nullptr;
 
-        bool stop = false;
-        bool started = false;
-        std::string input;
+    omp_set_num_threads(max_threads);
+    QuantumComputer qc(seed);
+    auto start = chrono::high_resolution_clock::now();
+    for(int i = 0; i < iterations; i++)
+    {
+        qc.boot(10);
+        qc.h(0);
+        qc.h(1);
+        qc.h(2);
+        qc.h(3);
+        qc.h(4);
+        qc.h(5);
+        qc.h(6);
+        qc.h(7);
+        qc.h(8);
+        qc.h(9);
 
-        char gate = '\0';
-        //Apesar de nomes descritivos esses dois vão gerenciar todos os argumentos dos inputs
-        int control = -1, target = -1;
+        qc.cnot(0, 1);
+        qc.cnot(1, 2);
+        qc.cnot(2, 3);
+        qc.cnot(3, 4);
+        qc.cnot(4, 5);
+        qc.cnot(5, 6);
+        qc.cnot(6, 7);
+        qc.cnot(7, 8);
+        qc.cnot(8, 9);
 
-        //the bug zone
-        //Usei isso para carregar inicializações durante fase de testes
-        //the bug zone
+        qc.h(0);
+        qc.h(1);
+        qc.h(2);
+        qc.h(3);
+        qc.h(4);
+        qc.h(5);
+        qc.h(6);
+        qc.h(7);
+        qc.h(8);
+        qc.h(9);
 
-        QuantumComputer qc(seed);
+        //outFile << qc.measureQreg() << '\n';
+        cout << i << " de 10" << endl;
+    }
+    auto end = chrono::high_resolution_clock::now();
+    chrono::duration<double> time = end - start;
 
-        cout<<"\033c";
-        printCircuitBox(screen, measures);
+    cout << "\rTime for " << iterations << " iterations: " << time.count() << " seconds" << endl;
 
-        /*
-         O flow de funcionamento é bem simples
-         Started determina se o computador está ligado ou não, e determina quais comandos estão disponíveis
-         stop determina se o programa deve continuar rodando
-         comandos como poweroff irão desligar o computador mas não parar o programa
-         */
-        while(!stop)
-        {
-            cout<<endl<<"> ";
-            std::getline(std::cin, input);
-            //input.pop_back();
+    outFile.close();
 
-            if(!started)
-            {
-                if(parseBoot(input, control))
-                {
-                    qc.boot(control);
-                    c = new Circuit(control);
-                    started = true;
-                    circuitSize = control;
-                    //qc.h(0);
-                }
-                if(parseQuit(input))
-                {
-                    stop = true;
-                }
-            }
-            else
-            {
-                //Em teoria é possível paralelizar esses ifs, mas não creio que o ganho valha a pena
-                //Aqui processar os inputs
-                if( parseAdd (input, gate, control))
-                {
-
-                    switch(gate) //Um código assim é O(1), então apesar de feio é rápido
-                    {
-                    case 'I':
-                        qc.id(control);
-                        break;
-                    case 'X':
-                        qc.x(control);
-                        break;
-                    case 'Y':
-                        qc.y(control);
-                        break;
-                    case 'Z':
-                        qc.z(control);
-                        break;
-                    case 'T':
-                        qc.t(control);
-                        break;
-                    case 'S':
-                        qc.s(control);
-                        break;
-                    case 'H':
-                        qc.h(control);
-                        break;
-                    case 's':
-                        qc.sdg(control);
-                        break;
-                    case 't':
-                        qc.tdg(control);
-                        break;
-                    }
-
-                    c->insertGate(gate, control, target);
-
-                }
-                else if( parseControl(input, gate, control, target))
-                {
-                    switch(gate)
-                    {
-                    case '+':
-                        qc.cnot(control, target);
-                        break;
-                    }
-                    c->insertGate(gate, target, control); //Macete pra porta não ficar invertida
-                }
-                else if( parseQuit (input))
-                {
-                    stop = true;
-                }
-                else if( parseShutdown (input))
-                {
-                    delete c;
-                    started = false;
-                    screen.clear();
-                }
-                else if( parseMeasure (input))
-                {
-                    int measure = qc.measureQreg();
-                    measures = to_string(measure);
-                    string complement = "";
-                    complement.append(circuitSize - dec_to_bin(measure).length(), '0');
-                    measures += " \t |" + complement + dec_to_bin(measure) + ">";
-                    started = false;
-                }
-                else if( parseFakeMeasure(input))
-                {
-                    seed++;
-                    int measure = qc.fakemeasure(seed);
-                    measures = to_string(measure);
-                    string complement = "";
-                    complement.append(circuitSize - dec_to_bin(measure).length(), '0');
-                    measures += " \t |" + complement + dec_to_bin(measure) + ">";
-                }
-            }
-
-            if(started)
-                screen = c->getScreen();
-            cout<<"\033c"; // Limpar tela
-            printCircuitBox(screen, measures);
-
-            gate = '\0';
-            control = -1, target = -1;
-        }
     return 0;
 }

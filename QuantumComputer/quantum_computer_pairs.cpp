@@ -1,5 +1,5 @@
+#include "quantum_computer.h"
 
-#include "quantumcomputer.h"
 
 template <typename T>
 using Matrix = std::vector<std::vector<T>>;
@@ -10,7 +10,7 @@ QuantumComputer::getSingleQubitPairs(unsigned int offset)
     if(offset >= this->qubitRegNum)
         throw std::invalid_argument(
             "Erro: offset invalido"
-        );
+            );
 
     std::unordered_map<int, bool> memory;
     Matrix<std::pair<int, std::complex<double>>> pairs;
@@ -18,10 +18,14 @@ QuantumComputer::getSingleQubitPairs(unsigned int offset)
     int shift = 1 << offset;
 
     long int amplitudes_size = this->amplitudes.size();
-    //paralelizar
+
     for(long int i = 0; i < amplitudes_size; i++)
     {
-        if(memory.find(i) != memory.end()) continue;
+        bool abort;
+        #pragma omp critical
+        {abort = (memory.find(i) != memory.end());}
+
+        if(abort) continue;
 
         int n = i / shift;
         // Como os grupos são separados pelo valor do qubit
@@ -37,12 +41,11 @@ QuantumComputer::getSingleQubitPairs(unsigned int offset)
             b = i + shift;
         }
 
-        memory[a], memory[b] = true, true;
-
+        memory[a], memory[b] = true;
         pairs.push_back({
-            {a, this->amplitudes[a]},
-            {b, this->amplitudes[b]}
-                        });
+        {a, this->amplitudes[a]},
+        {b, this->amplitudes[b]}
+        });
     }
 
     return pairs;
@@ -54,18 +57,20 @@ QuantumComputer::getTwoQubitsPairs(int control, int target)
     if (control >= this->qubitRegNum)
         throw std::invalid_argument(
             "Erro: Offset inválido " + std::to_string(control)
-        );
+            );
     if (target >= this->qubitRegNum)
         throw std::invalid_argument(
             "Erro: Offset inválido " + std::to_string(target)
-        );
+            );
 
     std::unordered_map<int, bool> memory;
     Matrix<std::pair<int, std::complex<double>>> pairs;
     int shiftControl = 1 << control;
     int shiftTarget = 1 << target;
 
+
     int amplitudes_size = this->amplitudes.size();
+
     for(int i = 0; i < amplitudes_size; i++)
     {
         if (memory.find(i) != memory.end()) continue;

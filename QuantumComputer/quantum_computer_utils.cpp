@@ -1,4 +1,4 @@
-#include "quantumcomputer.h"
+#include "quantum_computer.h"
 
 int QuantumComputer::measureQreg() {
     // Calcula a soma dos quadrados dos módulos das amplitudes
@@ -67,7 +67,7 @@ int QuantumComputer::fakemeasure(int seed) {
 Matrix<std::complex<double>> QuantumComputer::multiply(
     const Matrix<std::complex<double>>& A,
     const Matrix<std::complex<double>>& B
-) {
+    ) {
     int rowsA = A.size();
     int colsA = A[0].size();
     int rowsB = B.size();
@@ -76,7 +76,7 @@ Matrix<std::complex<double>> QuantumComputer::multiply(
     if(colsA != rowsB)
         throw std::runtime_error(
             "Dimensoes das matrizes nao batem\n"
-        );
+            );
 
     Matrix<std::complex<double>> result(rowsA, std::vector<std::complex<double>>(colsB, 0));
 

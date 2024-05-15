@@ -34,17 +34,7 @@ private:
     Matrix<std::complex<double>> multiply(
         const Matrix<std::complex<double>>& A,
         const Matrix<std::complex<double>>& B
-    );
-
-public:
-    QuantumComputer(int);
-
-    /*
-     Inicializa o computador com N qubits
-     Recebe: Número de qubits, número de bits para o registrador regular
-     */
-    void boot(unsigned int);
-
+        );
 
     /*
      Agrupa qubits usando um qubit de alvo
@@ -65,13 +55,13 @@ public:
     double getQubitsProbability(
         const std::vector<int>& offsets,
         const std::vector<int>& targets
-    );
+        );
 
     /*Aplica uma matriz unitária em um qubit*/
     void applySingleBitMatrix(
         int offset,
         const Matrix<std::complex<double>>& matrix
-    );
+        );
 
     /*Aplica uma matriz dupla em dois qubits
      Aqui é usada somente para a porta cnot*/
@@ -79,7 +69,17 @@ public:
         int control,
         int target,
         const Matrix<std::complex<double>>& matrix
-    );
+        );
+
+public:
+    /*Construtor. Setar a seed para inicializar*/
+    QuantumComputer(int);
+
+    /*
+     Inicializa o computador com N qubits
+     Recebe: Número de qubits, número de bits para o registrador regular
+     */
+    void boot(unsigned int);
 
     /*
      Aqui tem uma coleção de portas que estão implementadas no simulador
