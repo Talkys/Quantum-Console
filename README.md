@@ -13,34 +13,23 @@ make
 
 ## How to use
 
-Quantum Console is used with verbose instructions
+Quantum console is a code API. You can use it like Quiskit
 
-### start with n
+### Initialization
 
-Initializes the quantum computer with n qubits
+QuantumComputer(int seed) will create a new object with a seed for random generation
+boot(int N) will start the computer with N qubits
 
-### add \<gate> n
+### Gates
 
-Add a gate to the n qubit in the register. You can use -t to set the target for 2 qubit gates like: add \<gate> n -t m
+To add gates to the computer use the following functions
 
-#### gates
+(id, x, y, z, t, tdg, s, sdg, h) with a single int parameter that is the target qubit index 0-based
 
-The implemented gates are:
+cnot with two parameters: the control and target qubits
 
-> I X Y Z T S H + (cnot) s (sdg) t (tdg)
+### Measuring
 
-### measure
+To colapse the computer and get a result you can use measuerQreg()
 
-Measure will collapse all qubits and halt the computer
-
-### fake
-
-This is a fake measure. It will select a possible value for the register but will not collapse the qubits. It's for test and debug purposes.
-
-### poweroff
-
-Will shut the computer down (the virtual one). Use this to reset the setup without reopening the program.
-
-### quit
-
-Closes the program
+To do a fake measurement you can use fakemeasure(int seed) with a seed for random generation
